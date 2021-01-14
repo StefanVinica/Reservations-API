@@ -41,6 +41,15 @@ const UserService = {
       username: user.username,
     }
   },
+  createRestourant(db,newRestourant) {
+    return db
+    .into('restaurant')
+    .insert(newRestourant)
+    .returning('*')
+      .then(rows=>{
+         return rows[0]
+    })
+  },
 
 }
 

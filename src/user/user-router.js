@@ -41,6 +41,15 @@ userRouter
         req.app.get('db'),
         newUser
       )
+      
+      newRestourant = {
+        r_name: 'Name',
+        r_adress: 'Adress',
+        r_phone: 'Phone',
+        r_type: 1,
+        user_id: user.id
+      }
+      await UserService.createRestourant(req.app.get("db"), newRestourant);
 
       res
         .status(201)
