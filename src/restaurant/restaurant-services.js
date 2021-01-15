@@ -12,5 +12,18 @@ const restaurantServices = {
         .where('user_id',user_id)
         .first()
     },
+    getTypes(db){
+        return db
+        .from('restaurant_type')
+        .select(
+            'type_id',
+            'type_name'
+        )
+    },
+    updateRestaurant(db,newRestaurant,id){
+        return db('restaurant')
+        .where('id',id)
+        .update(newRestaurant)
+    },
 }
-module.exports = restaurantServices;
+module.exports = restaurantServices

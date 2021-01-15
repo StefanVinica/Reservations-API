@@ -20,4 +20,33 @@ restaurantRouter
     .catch(next)
 })
 
+restaurantRouter
+.route('/info/:id')
+.patch(bodyParser,(req, res, next)=>{
+    const { id } = req.params
+    const {r_name, r_adress,r_phone,r_type} = req.body
+    const newRestaurant = { r_name, r_adress,r_phone,r_type}
+    restaurantServices.updateRestaurant(req.app.get('db'),newRestaurant,id)
+    .then(
+        res
+        .status(204)
+        .end()
+    )
+    .catch(next)
+})
+
+restaurantRouter
+.route('/info/type')
+.get((req,res, next) =>{
+    restaurantServices.getTypes(req.app.get('db'))
+    .then(type=>{
+        res
+        .status(200)
+        .json(type)
+    })
+    .catch(next)
+})
+
+
+
 module.exports = restaurantRouter
