@@ -25,7 +25,7 @@ restaurantRouter
 .patch(bodyParser,(req, res, next)=>{
     const { id } = req.params
     const {r_name, r_adress,r_phone,r_type} = req.body
-    const newRestaurant = { r_name, r_adress,r_phone,r_type}
+    const newRestaurant = {r_name, r_adress,r_phone,r_type}
     restaurantServices.updateRestaurant(req.app.get('db'),newRestaurant,id)
     .then(
         res
@@ -47,6 +47,22 @@ restaurantRouter
     .catch(next)
 })
 
+restaurantRouter
+.route('/table/:id')
+.post(bodyParser,(req,res,next)=>{
+    const {id} = req.params
+    const {table_size} = req.body
+    const r_id = id
+    const newTable = {r_id,table_size}
+
+    restaurantServices.insertTable(req.app.get('db'),newTable)
+    .then(table =>{
+        res
+        .status(201)
+        .json(table)
+    })
+    .catch(next)
+})
 
 
 module.exports = restaurantRouter

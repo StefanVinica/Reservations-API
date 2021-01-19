@@ -25,5 +25,14 @@ const restaurantServices = {
         .where('id',id)
         .update(newRestaurant)
     },
+    insertTable(db,newTable){
+        return db
+        .insert(newTable)
+        .into('table')
+        .returning('*')
+        .then(rows=>{
+            return rows[0]
+        })        
+    }
 }
 module.exports = restaurantServices
