@@ -12,6 +12,12 @@ const restaurantServices = {
         .where('user_id',user_id)
         .first()
     },
+    getTables(db,r_id){
+        return db
+        .from('table')
+        .select('*')
+        .where('r_id',r_id)
+    },
     getTypes(db){
         return db
         .from('restaurant_type')
@@ -33,6 +39,13 @@ const restaurantServices = {
         .then(rows=>{
             return rows[0]
         })        
+    },
+    getUserInfo(db,user_id){
+        return db
+        .from('user')
+        .select('user_type')
+        .where('id',user_id)
+        .first()
     }
 }
 module.exports = restaurantServices

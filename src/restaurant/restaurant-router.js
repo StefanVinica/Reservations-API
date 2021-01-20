@@ -21,6 +21,18 @@ restaurantRouter
 })
 
 restaurantRouter
+.route('/user')
+.get((req, res, next)=>{
+    restaurantServices.getUserInfo(req.app.get('db'),req.user.id)
+    .then(user => {
+        res
+        .status(200)
+        .json(user)
+    })
+    .catch(next)
+})
+
+restaurantRouter
 .route('/info/:id')
 .patch(bodyParser,(req, res, next)=>{
     const { id } = req.params
@@ -34,6 +46,7 @@ restaurantRouter
     )
     .catch(next)
 })
+
 
 restaurantRouter
 .route('/info/type')
@@ -60,6 +73,16 @@ restaurantRouter
         res
         .status(201)
         .json(table)
+    })
+    .catch(next)
+})
+.get((req, res, next)=>{
+    const {id} = req.params
+    restaurantServices.getTables(req.app.get('db'),id)
+    .then(tables => {
+        res
+        .status(200)
+        .json(tables)
     })
     .catch(next)
 })
