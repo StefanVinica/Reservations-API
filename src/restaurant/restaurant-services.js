@@ -53,6 +53,21 @@ const restaurantServices = {
         join restaurant r on r.id=t.r_id
         left join reservation r2 on r2.t_id = t.table_id 
         where r.r_type = ${r_type} and t.table_size <=${party_size+1} and t.table_size>=${party_size}`)
+    },
+    makeReservation(db,newReservation){
+        return db
+        .insert(newReservation)
+        .into('reservation')
+        .returning('*')
+        .then(rows=>{
+            return rows[0]
+        }) 
+    },
+    myReservations(db,user_id){
+        return db
+        .raw(`select r.id,r.user_id,r.restaurant_id,r.res_from,r.res_to,r.number_of_ppl,r.t_id,r2.r_name,r2.r_adress,r2.r_phone from reservation r
+        join restaurant r2 on r2.id = r.restaurant_id
+        where r.user_id = ${user_id}`)
     }
 }
 module.exports = restaurantServices

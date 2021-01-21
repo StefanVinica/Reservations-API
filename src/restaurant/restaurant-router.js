@@ -100,6 +100,34 @@ restaurantRouter
     
 })
 
+restaurantRouter
+.route('/reservation')
+.post(bodyParser,(req, res, next)=>{
+    const user_id = req.user.id
+    const {restaurant_id,res_from,res_to,number_of_ppl,t_id} = req.body
+    const newReservation = {user_id,restaurant_id,res_from,res_to,number_of_ppl,t_id}
+    restaurantServices.makeReservation(req.app.get('db'),newReservation)
+    .then(reservation => {
+        res
+        .status(200)
+        .json(reservation)
+    })
+    .catch(next)
+})
+
+restaurantRouter
+.route('/myres')
+.get((req, res, next)=>{
+    const user_id = req.user.id
+    restaurantServices.myReservations(req.app.get('db'),user_id)
+    .then(myres=>{
+        res
+        .status(200)
+        .json(myres.rows)
+    })
+    .catch(next)
+})
+
 
 
 module.exports = restaurantRouter
