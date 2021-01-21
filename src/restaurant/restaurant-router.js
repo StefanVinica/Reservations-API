@@ -87,5 +87,19 @@ restaurantRouter
     .catch(next)
 })
 
+restaurantRouter
+.route('/find/:type/:party')
+.get(bodyParser,(req, res, next)=>{
+    const {type,party} = req.params
+    restaurantServices.findTable(req.app.get('db'),parseInt(type),parseInt(party))
+    .then(tables=>{
+        res
+        .status(200)
+        .json(tables.rows)
+    })
+    
+})
+
+
 
 module.exports = restaurantRouter
