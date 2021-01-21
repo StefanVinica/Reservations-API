@@ -47,12 +47,14 @@ const restaurantServices = {
         .where('id',user_id)
         .first()
     },
-    findTable(db,r_type,party_size){
+    findTable(db,r_type,party_size,from,to){
         return db
-        .raw(`select t.table_id,t.r_id,t.table_size,r.r_name,r.r_type,r2.res_from,r2.res_to from "table" t
-        join restaurant r on r.id=t.r_id
-        left join reservation r2 on r2.t_id = t.table_id 
-        where r.r_type = ${r_type} and t.table_size <=${party_size+1} and t.table_size>=${party_size}`)
+        .raw(`select * from "table" t 
+        join restaurant r2 on r2.id = t.r_id
+        where table_id not in(
+        select r.t_id from reservation r
+        where res_from >= '${from}' and res_to <= '${to}'
+        ) and r2.r_type = ${r_type} and t.table_size <=${party_size+1} and t.table_size>=${party_size}`)
     },
     makeReservation(db,newReservation){
         return db
