@@ -64,9 +64,9 @@ restaurantRouter
 .route('/table/:id')
 .post(bodyParser,(req,res,next)=>{
     const {id} = req.params
-    const {table_size} = req.body
+    const {table_size,t_name} = req.body
     const r_id = id
-    const newTable = {r_id,table_size}
+    const newTable = {r_id,table_size,t_name}
 
     restaurantServices.insertTable(req.app.get('db'),newTable)
     .then(table =>{
@@ -125,6 +125,19 @@ restaurantRouter
         res
         .status(200)
         .json(myres.rows)
+    })
+    .catch(next)
+})
+
+restaurantRouter
+.route('/adminres/:r_id')
+.get((req, res, next)=>{
+    const {r_id} = req.params
+    restaurantServices.adminReservations(req.app.get('db'),r_id)
+    .then(reservations=>{
+        res
+        .status(200)
+        .json(reservations.rows)
     })
     .catch(next)
 })

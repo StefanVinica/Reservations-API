@@ -70,6 +70,14 @@ const restaurantServices = {
         .raw(`select r.id,r.user_id,r.restaurant_id,r.res_from,r.res_to,r.number_of_ppl,r.t_id,r2.r_name,r2.r_adress,r2.r_phone from reservation r
         join restaurant r2 on r2.id = r.restaurant_id
         where r.user_id = ${user_id}`)
+    },
+    adminReservations(db,r_id){
+        return db
+        .raw(`select r.res_from,r.res_to,r.number_of_ppl,t.table_id,t.t_name,t.table_available,u2."name" from reservation r 
+        left join "table" t on r.t_id = t.table_id
+        join "user" u2 on u2.id = r.user_id 
+        where r.restaurant_id = ${r_id}
+        order by r.res_from `)
     }
 }
 module.exports = restaurantServices
