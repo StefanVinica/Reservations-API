@@ -31,6 +31,11 @@ const restaurantServices = {
         .where('id',id)
         .update(newRestaurant)
     },
+    updateTable(db,newSize,table_id){
+        return db('table')
+        .where('table_id',table_id)
+        .update(newSize)
+    },
     insertTable(db,newTable){
         return db
         .insert(newTable)
@@ -73,11 +78,17 @@ const restaurantServices = {
     },
     adminReservations(db,r_id){
         return db
-        .raw(`select r.res_from,r.res_to,r.number_of_ppl,t.table_id,t.t_name,t.table_available,u2."name" from reservation r 
+        .raw(`select r.id,r.res_from,r.res_to,r.number_of_ppl,t.table_id,t.t_name,t.table_available,u2."name" from reservation r 
         left join "table" t on r.t_id = t.table_id
         join "user" u2 on u2.id = r.user_id 
-        where r.restaurant_id = ${r_id}
-        order by r.res_from `)
-    }
+        where r.restaurant_id =${r_id}
+        order by r.res_from  `)
+    },
+    deleteReservation(db,id){
+        return db
+        .from('reservation')
+        .where({id})
+        .delete()
+    },
 }
 module.exports = restaurantServices

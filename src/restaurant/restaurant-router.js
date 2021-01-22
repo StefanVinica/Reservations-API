@@ -47,6 +47,20 @@ restaurantRouter
     .catch(next)
 })
 
+restaurantRouter
+.route('/tablesize/:table_id')
+.patch(bodyParser,(req, res, next)=>{
+    const {table_id} = req.params
+    const {table_size} = req.body
+    const newSize = {table_size}
+    restaurantServices.updateTable(req.app.get('db'),newSize,table_id)
+    .then(
+        res
+        .status(204)
+        .end()
+    )
+    .catch(next)
+})
 
 restaurantRouter
 .route('/info/type')
@@ -141,6 +155,21 @@ restaurantRouter
     })
     .catch(next)
 })
+
+restaurantRouter
+.route('/reservation/:id')
+.delete((req, res, next)=>{
+    const {id} = req.params
+    restaurantServices.deleteReservation(req.app.get('db'),id)
+    .then(()=>{
+        res
+        .status(204)
+        .end()
+    })
+    .catch(next)
+})
+
+
 
 
 
