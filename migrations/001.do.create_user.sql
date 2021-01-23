@@ -9,7 +9,8 @@ CREATE TABLE "user" (
   "id" SERIAL PRIMARY KEY,
   "username" TEXT NOT NULL UNIQUE,
   "password" TEXT NOT NULL,
-  "name" TEXT NOT NULL
+  "name" TEXT NOT NULL,
+  "user_type" text;
 );
 
 drop table if exists "table";
@@ -17,7 +18,8 @@ create table "table"(
 table_id bigserial primary key,
 r_id bigint references restaurant(id),
 table_size integer not null,
-table_available bool default true
+table_available bool default true,
+t_name text
 );
 
 
@@ -38,14 +40,6 @@ user_id bigint references "user"(id),
 restaurant_id bigint references "restaurant"(id),
 res_from timestamp not null,
 res_to timestamp not null,
-number_of_ppl int not null
+number_of_ppl int not null,
+t_id bigint references "table"(table_id)
 );
-
-ALTER TABLE "user"
-ADD COLUMN user_type text;
-
-alter table reservation
-add column t_id bigint references "table"(table_id)
-
-alter table "table"
-add column t_name text
