@@ -13,16 +13,6 @@ CREATE TABLE "user" (
   "user_type" text;
 );
 
-drop table if exists "table";
-create table "table"(
-table_id bigserial primary key,
-r_id bigint references restaurant(id),
-table_size integer not null,
-table_available bool default true,
-t_name text
-);
-
-
 DROP TABLE IF EXISTS restaurant;
 create table restaurant(
 id bigserial primary key,
@@ -32,6 +22,16 @@ r_phone text not null,
 r_type bigint references restaurant_type(type_id),
 user_id bigint references "user"(id)
 );
+
+drop table if exists "table";
+create table "table"(
+table_id bigserial primary key,
+r_id bigint references restaurant(id),
+table_size integer not null,
+table_available bool default true,
+t_name text
+);
+
 
 DROP TABLE IF EXISTS "reservation";
 CREATE TABLE "reservation" (
