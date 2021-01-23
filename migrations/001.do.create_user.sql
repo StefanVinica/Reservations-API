@@ -10,7 +10,7 @@ CREATE TABLE "user" (
   "username" TEXT NOT NULL UNIQUE,
   "password" TEXT NOT NULL,
   "name" TEXT NOT NULL,
-  "user_type" text;
+  "user_type" text
 );
 
 DROP TABLE IF EXISTS restaurant;
