@@ -1,5 +1,34 @@
 # Reservation API!
 
+# Routes
+
+1. GET /info
+2. GET /user
+3. PATCH /info/:id
+4. PATCH /tablesize/:table_id
+5. GET /info/type
+6. POST /table/:id
+7. POST /find/:type/:party
+8. POST /reservation
+9. GET /myres
+10. GET /adminres/:r_id
+11. DELETE /reservation/:id
+
+1. Returns information about the restaurant
+2. Returns what kind of User it is
+3. Edit the info of restaurant (where id is the restaurant ID)
+   a. You must have r_name,r_adress,r_phone, and r_type of restaurant in the req body
+4. Edit the Size of a table (where table_id is the table ID)
+   a. You must have table_size in the req body
+5. Returns the avilable types of restaurants
+6. Add a new table (where id is the restaurant ID)
+   a. You must have table_size and t_name in req body
+7. Returns avilable table in the chosen time slot where type is the id of the type and party is the size of the party both
+   a. You must have from and to in the req body (both JSON dates)
+9. Returns the logged in users reservations
+10. Returns all the reservations of the restaurant where r_id is the retaurant ID
+11. Deletes a reservation where id is the reservation ID   
+
 ## Local dev setup
 
 ```bash
