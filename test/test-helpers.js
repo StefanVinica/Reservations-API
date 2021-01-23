@@ -24,12 +24,31 @@ function makeUsersArray() {
       username: 'test-user-1',
       name: 'Test user 1',
       password: 'password',
+      user_type: 'Admin',
     },
     {
       id: 2,
       username: 'test-user-2',
       name: 'Test user 2',
       password: 'password',
+      user_type: 'User',
+    },
+  ]
+}
+
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of types objects
+ */
+function makeTypesArray() {
+  return [
+    {
+      type_id: 1,
+      type_name: 'Test-Type1',
+    },
+    {
+      type_id: 2,
+      type_name: 'Test-Type2',
     },
   ]
 }
@@ -113,21 +132,11 @@ function cleanTables(db) {
     trx.raw(
       `TRUNCATE
         "reservation",
-        "table",
         "restaurant",
-        "restaurant_type",
-        "user"`
+        "table",
+        "user",
+        "restaurant_type"`
       )
-      // .then(() =>
-      //   Promise.all([
-      //     trx.raw(`ALTER SEQUENCE word_id_seq minvalue 0 START WITH 1`),
-      //     trx.raw(`ALTER SEQUENCE language_id_seq minvalue 0 START WITH 1`),
-      //     trx.raw(`ALTER SEQUENCE user_id_seq minvalue 0 START WITH 1`),
-      //     trx.raw(`SELECT setval('word_id_seq', 0)`),
-      //     trx.raw(`SELECT setval('language_id_seq', 0)`),
-      //     trx.raw(`SELECT setval('user_id_seq', 0)`),
-      //   ])
-      // )
   )
 }
 
@@ -152,48 +161,28 @@ function seedUsers(db, users) {
   })
 }
 
-// /**
-//  * seed the databases with words and update sequence counter
-//  * @param {knex instance} db
-//  * @param {array} users - array of user objects for insertion
-//  * @param {array} languages - array of languages objects for insertion
-//  * @param {array} words - array of words objects for insertion
-//  * @returns {Promise} - when all tables seeded
-//  */
-// async function seedUsersLanguagesWords(db, users, languages, words) {
-//   await seedUsers(db, users)
+/**
+ * seed the databases with words and update sequence counter
+ * @param {knex instance} db
+ * @param {array} users - array of user objects for insertion
+ * @param {array} types - array of restaurant types objects for insertion
+ * @returns {Promise} - when all tables seeded
+ */
+async function seedTypes(db, users, types) {
+  await seedUsers(db, users)
 
-//   await db.transaction(async trx => {
-//     await trx.into('language').insert(languages)
-//     await trx.into('word').insert(words)
-
-//     const languageHeadWord = words.find(
-//       w => w.language_id === languages[0].id
-//     )
-
-//     await trx('language')
-//       .update({ head: languageHeadWord.id })
-//       .where('id', languages[0].id)
-
-//     await Promise.all([
-//       trx.raw(
-//         `SELECT setval('language_id_seq', ?)`,
-//         [languages[languages.length - 1].id],
-//       ),
-//       trx.raw(
-//         `SELECT setval('word_id_seq', ?)`,
-//         [words[words.length - 1].id],
-//       ),
-//     ])
-//   })
-// }
+  await db.transaction(async trx => {
+    await trx.into('restaurant_type').insert(types)
+    
+  })
+}
 
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
-  // makeLanguagesAndWords,
+  makeTypesArray,
   makeAuthHeader,
   cleanTables,
   seedUsers,
-  // seedUsersLanguagesWords,
+  seedTypes,
 }

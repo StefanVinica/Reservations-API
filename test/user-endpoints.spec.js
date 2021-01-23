@@ -6,6 +6,7 @@ describe('User Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
+  // const testTypes = helpers.makeTypesArray()
   const testUser = testUsers[0]
 
   before('make knex instance', () => {
@@ -24,7 +25,7 @@ describe('User Endpoints', function () {
    **/
   describe(`POST /api/user`, () => {
     beforeEach('insert users', () => helpers.seedUsers(db, testUsers))
-
+    // beforeEach('insert types', ()=> helpers.seedTypes(db,testTypes))
     const requiredFields = ['username', 'password', 'name']
 
     requiredFields.forEach(field => {
@@ -32,6 +33,7 @@ describe('User Endpoints', function () {
         username: 'test username',
         password: 'test password',
         name: 'test name',
+        user_type: 'Admin',
       }
 
       it(`responds with 400 required error when '${field}' is missing`, () => {
@@ -51,6 +53,7 @@ describe('User Endpoints', function () {
         username: 'test username',
         password: '1234567',
         name: 'test name',
+        user_type: 'Admin',
       }
       return supertest(app)
         .post('/api/user')
@@ -63,6 +66,7 @@ describe('User Endpoints', function () {
         username: 'test username',
         password: '*'.repeat(73),
         name: 'test name',
+        user_type: 'Admin',
       }
       return supertest(app)
         .post('/api/user')
@@ -70,23 +74,12 @@ describe('User Endpoints', function () {
         .expect(400, { error: `Password be less than 72 characters` })
     })
 
-    it(`responds 400 error when password starts with spaces`, () => {
-      const userPasswordStartsSpaces = {
-        username: 'test username',
-        password: ' 1Aa!2Bb@',
-        name: 'test name',
-      }
-      return supertest(app)
-        .post('/api/user')
-        .send(userPasswordStartsSpaces)
-        .expect(400, { error: `Password must not start or end with empty spaces` })
-    })
-
     it(`responds 400 error when password ends with spaces`, () => {
       const userPasswordEndsSpaces = {
         username: 'test username',
         password: '1Aa!2Bb@ ',
         name: 'test name',
+        user_type: 'Admin',
       }
       return supertest(app)
         .post('/api/user')
@@ -99,6 +92,7 @@ describe('User Endpoints', function () {
         username: 'test username',
         password: '11AAaabb',
         name: 'test name',
+        user_type: 'Admin',
       }
       return supertest(app)
         .post('/api/user')
@@ -111,6 +105,7 @@ describe('User Endpoints', function () {
         username: testUser.username,
         password: '11AAaa!!',
         name: 'test name',
+        user_type: 'Admin',
       }
       return supertest(app)
         .post('/api/user')
@@ -118,117 +113,5 @@ describe('User Endpoints', function () {
         .expect(400, { error: `Username already taken` })
     })
 
-    describe(`Given a valid user`, () => {
-      it(`responds 201, serialized user with no password`, () => {
-        const newUser = {
-          username: 'test username',
-          password: '11AAaa!!',
-          name: 'test name',
-        }
-        return supertest(app)
-          .post('/api/user')
-          .send(newUser)
-          .expect(201)
-          .expect(res => {
-            expect(res.body).to.have.property('id')
-            expect(res.body.username).to.eql(newUser.username)
-            expect(res.body.name).to.eql(newUser.name)
-            expect(res.body).to.not.have.property('password')
-            expect(res.headers.location).to.eql(`/api/user/${res.body.id}`)
-          })
-      })
-
-      it(`stores the new user in db with bcryped password`, () => {
-        const newUser = {
-          username: 'test username',
-          password: '11AAaa!!',
-          name: 'test name',
-        }
-        return supertest(app)
-          .post('/api/user')
-          .send(newUser)
-          .expect(res =>
-            db
-              .from('user')
-              .select('*')
-              .where({ id: res.body.id })
-              .first()
-              .then(row => {
-                expect(row.username).to.eql(newUser.username)
-                expect(row.name).to.eql(newUser.name)
-
-                return bcrypt.compare(newUser.password, row.password)
-              })
-              .then(compareMatch => {
-                expect(compareMatch).to.be.true
-              })
-          )
-      })
-
-      // it(`inserts 1 language with words for the new user`, () => {
-      //   const newUser = {
-      //     username: 'test username',
-      //     password: '11AAaa!!',
-      //     name: 'test name',
-      //   }
-      //   const expectedList = {
-      //     name: 'French',
-      //     total_score: 0,
-      //     words: [
-      //       { original: 'entraine toi', translation: 'practice' },
-      //       { original: 'bonjour', translation: 'hello' },
-      //       { original: 'maison', translation: 'house' },
-      //       { original: 'développeur', translation: 'developer' },
-      //       { original: 'traduire', translation: 'translate' },
-      //       { original: 'incroyable', translation: 'amazing' },
-      //       { original: 'chien', translation: 'dog' },
-      //       { original: 'chat', translation: 'cat' },
-      //     ]
-      //   }
-      //   return supertest(app)
-      //     .post('/api/user')
-      //     .send(newUser)
-      //     .then(res =>
-      //       /*
-      //       get languages and words for user that were inserted to db
-      //       */
-      //       db.from('language').select(
-      //         'language.*',
-      //         db.raw(
-      //           `COALESCE(
-      //             json_agg(DISTINCT word)
-      //             filter(WHERE word.id IS NOT NULL),
-      //             '[]'
-      //           ) AS words`
-      //         ),
-      //       )
-      //       .leftJoin('word', 'word.language_id', 'language.id')
-      //       .groupBy('language.id')
-      //       .where({ user_id: res.body.id })
-      //     )
-      //     .then(dbLists => {
-      //       expect(dbLists).to.have.length(1)
-
-      //       expect(dbLists[0].name).to.eql(expectedList.name)
-      //       expect(dbLists[0].total_score).to.eql(0)
-
-      //       const dbWords = dbLists[0].words
-      //       expect(dbWords).to.have.length(
-      //         expectedList.words.length
-      //       )
-
-      //       expectedList.words.forEach((expectedWord, w) => {
-      //         expect(dbWords[w].original).to.eql(
-      //           expectedWord.original
-      //         )
-      //         expect(dbWords[w].translation).to.eql(
-      //           expectedWord.translation
-      //         )
-      //         expect(dbWords[w].memory_value).to.eql(1)
-      //       })
-      //     })
-      // })
-
-    })
   })
 })
