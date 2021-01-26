@@ -6,7 +6,7 @@ describe('User Endpoints', function () {
   let db
 
   const testUsers = helpers.makeUsersArray()
-  // const testTypes = helpers.makeTypesArray()
+
   const testUser = testUsers[0]
 
   before('make knex instance', () => {
@@ -25,7 +25,7 @@ describe('User Endpoints', function () {
    **/
   describe(`POST /api/user`, () => {
     beforeEach('insert users', () => helpers.seedUsers(db, testUsers))
-    // beforeEach('insert types', ()=> helpers.seedTypes(db,testTypes))
+
     const requiredFields = ['username', 'password', 'name']
 
     requiredFields.forEach(field => {
@@ -114,4 +114,6 @@ describe('User Endpoints', function () {
     })
 
   })
+
+  
 })

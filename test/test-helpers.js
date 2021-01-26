@@ -53,60 +53,55 @@ function makeTypesArray() {
   ]
 }
 
-// /**
-//  * generate fixtures of languages and words for a given user
-//  * @param {object} user - contains `id` property
-//  * @returns {Array(languages, words)} - arrays of languages and words
-//  */
-// function makeLanguagesAndWords(user) {
-//   const languages = [
-//     {
-//       id: 1,
-//       name: 'Test language 1',
-//       user_id: user.id,
-//     },
-//   ]
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of restaurant objects
+ */
+function makeRestaurantArray() {
+  return [
+    {
+      id: 1,
+      r_name: 'Test 1',
+      r_adress: 'Address 1',
+      r_phone: '123321123',
+      r_type: 1,
+      user_id: 1,
+    },
+  ]
+}
 
-//   const words = [
-//     {
-//       id: 1,
-//       original: 'original 1',
-//       translation: 'translation 1',
-//       language_id: 1,
-//       next: 2,
-//     },
-//     {
-//       id: 2,
-//       original: 'original 2',
-//       translation: 'translation 2',
-//       language_id: 1,
-//       next: 3,
-//     },
-//     {
-//       id: 3,
-//       original: 'original 3',
-//       translation: 'translation 3',
-//       language_id: 1,
-//       next: 4,
-//     },
-//     {
-//       id: 4,
-//       original: 'original 4',
-//       translation: 'translation 4',
-//       language_id: 1,
-//       next: 5,
-//     },
-//     {
-//       id: 5,
-//       original: 'original 5',
-//       translation: 'translation 5',
-//       language_id: 1,
-//       next: null,
-//     },
-//   ]
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of table objects
+ */
+function makeTableArray() {
+  return [
+    {
+      id: 1,
+      r_id: 1,
+      table_size: 2,
+      table_available: true,
+      t_name: 'test name',
+    },
+  ]
+}
 
-//   return [languages, words]
-// }
+/**
+ * create a knex instance connected to postgres
+ * @returns {array} of Reservation objects
+ */
+function makeReservationArray() {
+  return [
+    {
+      user_id: 1,
+      restaurant_id: 1,
+      res_from: '2021-01-21T02:09:00.000Z',
+      res_to: '2021-01-21T04:09:00.000Z',
+      number_of_ppl: 2,
+      t_id:1,
+    },
+  ]
+}
 
 /**
  * make a bearer token with jwt for authorization header
@@ -161,28 +156,36 @@ function seedUsers(db, users) {
   })
 }
 
-/**
- * seed the databases with words and update sequence counter
- * @param {knex instance} db
- * @param {array} users - array of user objects for insertion
- * @param {array} types - array of restaurant types objects for insertion
- * @returns {Promise} - when all tables seeded
- */
-async function seedTypes(db, users, types) {
-  await seedUsers(db, users)
 
-  await db.transaction(async trx => {
-    await trx.into('restaurant_type').insert(types)
-    
-  })
+function seed(db,users,types,restaurant,table,reservation){
+  return db
+  .into('user')
+  .insert(users)
+.then(  
+  db
+  .into('restaurant_type')
+  .insert(types))
+.then(db
+  .into('restaurant')
+  .insert(restaurant))
+.then(db
+  .into('table')
+  .insert(table)) 
+.then(db
+  .into('reservation')
+  .insert(reservation))   
+  
 }
 
 module.exports = {
   makeKnexInstance,
   makeUsersArray,
   makeTypesArray,
+  makeRestaurantArray,
   makeAuthHeader,
+  makeTableArray,
+  makeReservationArray,
   cleanTables,
   seedUsers,
-  seedTypes,
+  seed,
 }
