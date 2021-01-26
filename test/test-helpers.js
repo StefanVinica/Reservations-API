@@ -67,6 +67,14 @@ function makeRestaurantArray() {
       r_type: 1,
       user_id: 1,
     },
+    {
+      id: 2,
+      r_name: 'Test 2',
+      r_adress: 'Address 2',
+      r_phone: '22221123',
+      r_type: 2,
+      user_id: 2,
+    },
   ]
 }
 

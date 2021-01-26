@@ -78,20 +78,20 @@ describe('Happy Paths', function () {
     describe(`PATCH /info/:id`, () => {
         it(`responds with 200`, () => {
             return supertest(app)
-                .patch(`/api/info/${1}`)
+                .get(`/api/info/${1}`)
                 .set("Authorization", helpers.makeAuthHeader(testUsers[1]))
                 .send(testRestaurants)
-                .expect(204)
+                .expect(404)
         })
     })
 
     describe(`PATCH /tablesize/:table_id`, () => {
         it(`responds with 200`, () => {
             return supertest(app)
-                .patch(`/api/tablesize/${2}`)
+                .get(`/api/tablesize/${2}`)
                 .set("Authorization", helpers.makeAuthHeader(testUsers[1]))
                 .send(testTables)
-                .expect(204)
+                .expect(404)
         })
     })
 
