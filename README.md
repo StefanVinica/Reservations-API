@@ -42,7 +42,6 @@ If your user has a password be sure to set it in `.env` for all appropriate fiel
 ```bash
 npm install
 npm run migrate
-env MIGRATION_DB_NAME=spaced-repetition-test npm run migrate
 ```
 
 And `npm test` should work at this point
